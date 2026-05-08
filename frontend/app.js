@@ -10,7 +10,7 @@
     }).format(n);
 
  
-  fetch("http://192.168.1.49:3000/products")
+  fetch("http://10.57.30.104:3000/products")
     .then((res) => res.json())
     .then((products) => {
       listEl.replaceChildren();
