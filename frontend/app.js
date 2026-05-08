@@ -1,10 +1,6 @@
 (function () {
   const listEl = document.getElementById("product-list");
-
   if (!listEl) return;
-
-  const products =
-    typeof PRODUCTS !== "undefined" && Array.isArray(PRODUCTS) ? PRODUCTS : [];
 
   const formatPrice = (n) =>
     new Intl.NumberFormat("es-AR", {
@@ -13,21 +9,29 @@
       minimumFractionDigits: 2,
     }).format(n);
 
-  listEl.replaceChildren();
+ 
+  fetch("http://192.168.1.49:3000/products")
+    .then((res) => res.json())
+    .then((products) => {
+      listEl.replaceChildren();
+      for (const p of products) {
+        const li = document.createElement("li");
+        li.className = "item";
 
-  for (const p of products) {
-    const li = document.createElement("li");
-    li.className = "item";
+        const name = document.createElement("span");
+        name.className = "item-name";
+        name.textContent = p.name;
 
-    const name = document.createElement("span");
-    name.className = "item-name";
-    name.textContent = p.name;
+        const price = document.createElement("span");
+        price.className = "item-price";
+        price.textContent = formatPrice(p.price);
 
-    const price = document.createElement("span");
-    price.className = "item-price";
-    price.textContent = formatPrice(p.price);
-
-    li.append(name, price);
-    listEl.appendChild(li);
-  }
+        li.append(name, price);
+        listEl.appendChild(li);
+      }
+    })
+    .catch((err) => {
+      listEl.innerHTML = "<li>Error al cargar productos</li>";
+      console.error(err);
+    });
 })();
